@@ -1,3 +1,6 @@
+> 使用 Komari 主题包参看 Pack 分支，主题包在 Release 中下载
+> Komari 分支与 Pack 分支相互独立
+
 # ServerSentry - 现代化服务器监控面板
 
 一个基于 Next.js 15 + React 19 的现代化服务器监控主题，专为 Komari 服务端设计，使用 TypeScript、Tailwind CSS 4 和现代 React 技术栈构建。
@@ -11,7 +14,7 @@
 - 🎨 **现代 UI**：基于 Shadcn UI 的优雅设计，支持深色/浅色模式
 - 📱 **响应式设计**：完美适配桌面、平板和移动设备
 - ⚡ **高性能**：Turbopack 开发模式，优化的生产构建
-- 🔄 **实时更新**：2秒间隔自动刷新，支持 WebSocket 连接
+- 🔄 **实时更新**：自动刷新，支持 WebSocket 连接
 - 🏷️ **地区分组**：支持按地区分组显示服务器
 - 🧩 **模块化架构**：组件化设计，易于定制和扩展
 
@@ -22,59 +25,18 @@
 - **Node.js**: 18.17.0 或更高版本
 - **包管理器**: npm、yarn 或 pnpm（推荐使用 npm）
 - **现代浏览器**: 支持 ES2022 的现代浏览器
+- **Komari 服务端**: 需要运行 Komari 服务端作为后端数据源
 
 ### 安装依赖
 
 ```bash
-# 使用 npm
-npm install
-
-# 或使用 yarn
-yarn install
-
-# 或使用 pnpm
-pnpm install
+bun install
 ```
-
-### 开发模式
-
-```bash
-# 使用 npm
-npm run dev
-
-# 或使用 yarn
-yarn dev
-
-# 或使用 pnpm
-pnpm dev
-```
-
-默认情况下，应用将在 http://localhost:3000 上运行，使用 Turbopack 进行快速开发。
 
 ### 构建生产版本
 
 ```bash
-# 使用 npm
-npm run build
-
-# 或使用 yarn
-yarn build
-
-# 或使用 pnpm
-pnpm build
-```
-
-### 启动生产版本
-
-```bash
-# 使用 npm
-npm start
-
-# 或使用 yarn
-yarn start
-
-# 或使用 pnpm
-pnpm start
+bun run build
 ```
 
 ## 🔧 环境变量配置
@@ -127,6 +89,7 @@ npm run build
 ```
 
 2. **部署到 Web 服务器**：
+
    - 将生成的 `.next` 目录部署到您的 Web 服务器
    - 支持 Vercel、Netlify、Nginx、Apache 等
 
@@ -168,15 +131,18 @@ server {
 
 ### 主要组件
 
-- **`DashboardStats`**: 监控概览面板
-- **`ServerCard`**: 服务器卡片组件
-- **`ServerMetric`**: 指标显示组件
-- **`Navbar`**: 导航栏组件
-- **`RegionFilter`**: 地区筛选组件
+- **`DashboardStats`**: 监控概览面板（`src/components/dashboard-stats.tsx`）
+- **`ServerCard`**: 服务器卡片组件（`src/components/server-card.tsx`）
+- **`ServerMetric`**: 指标显示组件（`src/components/server-metric.tsx`）
+- **`Navbar`**: 导航栏组件（`src/components/navbar.tsx`）
+- **`RegionFilter`**: 地区筛选组件（`src/components/region-filter.tsx`）
+- **`ServerList`**: 服务器列表组件（`src/components/server-list.tsx`）
+- **`RegionGroupView`**: 地区分组视图组件（`src/components/region-group-view.tsx`）
 
 ### 样式定制
 
 项目使用 Tailwind CSS 4 和 CSS 变量，支持：
+
 - 深色/浅色主题切换
 - 自定义颜色方案
 - 响应式布局调整
@@ -185,16 +151,50 @@ server {
 ## 📚 技术栈
 
 - **框架**: Next.js 15 + React 19
-- **语言**: TypeScript
-- **样式**: Tailwind CSS 4
+- **语言**: TypeScript 5
+- **样式**: Tailwind CSS 4 + CSS 变量
 - **UI 组件**: Shadcn UI + Radix UI
-- **状态管理**: TanStack Query
-- **图标**: Lucide React
-- **字体**: HarmonyOS Sans SC
+- **状态管理**: TanStack Query (React Query)
+- **图标**: Lucide React + Radix UI Icons
+- **字体**: HarmonyOS Sans SC（自定义字体）
+- **构建工具**: Turbopack（开发模式）
+- **部署**: 支持 Vercel、Netlify、Docker 等
+
+## 🔧 开发说明
+
+### 项目结构
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/               # API 路由（代理到 Komari）
+│   ├── globals.css        # 全局样式
+│   ├── layout.tsx         # 根布局
+│   └── page.tsx           # 首页
+├── components/            # React 组件
+│   ├── dashboard-stats.tsx # 监控概览
+│   ├── server-card.tsx    # 服务器卡片
+│   ├── server-metric.tsx  # 指标显示
+│   ├── navbar.tsx         # 导航栏
+│   └── ui/               # Shadcn UI 组件
+├── lib/                  # 工具库
+│   ├── config.ts         # 全局配置
+│   ├── rpc2.ts          # RPC2 客户端
+│   └── response.ts       # 响应工具
+├── hooks/                # React Hooks
+├── types/                # TypeScript 类型定义
+└── styles/               # 样式文件
+    └── fonts.css         # 字体定义
+```
+
+### API 代理机制
+
+本主题通过 Next.js API 路由代理所有请求到 Komari 服务端：
 
 ## 📄 许可证
 
 MIT License
 
+## 📄 许可证
 
-
+MIT License
