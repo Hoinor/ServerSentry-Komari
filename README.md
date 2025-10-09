@@ -1,4 +1,5 @@
 > 使用 Komari 主题包参看 Pack 分支，主题包在 Release 中下载
+>
 > Komari 分支与 Pack 分支相互独立
 
 # ServerSentry - 现代化服务器监控面板
