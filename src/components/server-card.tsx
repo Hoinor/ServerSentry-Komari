@@ -88,29 +88,29 @@ export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerC
     </div>
   );
 }, (prevProps, nextProps) => {
-  // 仅比较会影响 UI 的字段，避免昂贵的 JSON.stringify
-  const a = prevProps.server;
-  const b = nextProps.server;
+  // 仅比较会影响 UI 的关键字段，避免昂贵的深度比较
+  const prev = prevProps.server;
+  const next = nextProps.server;
 
   return (
-    a.alias === b.alias &&
-    a.name === b.name &&
-    a.type === b.type &&
-    a.location === b.location &&
-    a.uptime === b.uptime &&
-    a.online4 === b.online4 &&
-    a.online6 === b.online6 &&
-    a.cpu === b.cpu &&
-    a.memory_total === b.memory_total &&
-    a.memory_used === b.memory_used &&
-    a.swap_total === b.swap_total &&
-    a.swap_used === b.swap_used &&
-    a.hdd_total === b.hdd_total &&
-    a.hdd_used === b.hdd_used &&
-    a.network_rx === b.network_rx &&
-    a.network_tx === b.network_tx &&
-    a.network_in === b.network_in &&
-    a.network_out === b.network_out
+    prev.name === next.name &&
+    prev.alias === next.alias &&
+    prev.type === next.type &&
+    prev.location === next.location &&
+    prev.online4 === next.online4 &&
+    prev.online6 === next.online6 &&
+    prev.uptime === next.uptime &&
+    prev.cpu === next.cpu &&
+    prev.memory_total === next.memory_total &&
+    prev.memory_used === next.memory_used &&
+    prev.swap_total === next.swap_total &&
+    prev.swap_used === next.swap_used &&
+    prev.hdd_total === next.hdd_total &&
+    prev.hdd_used === next.hdd_used &&
+    prev.network_rx === next.network_rx &&
+    prev.network_tx === next.network_tx &&
+    prev.network_in === next.network_in &&
+    prev.network_out === next.network_out
   );
 });
 ServerCard.displayName = 'ServerCard';

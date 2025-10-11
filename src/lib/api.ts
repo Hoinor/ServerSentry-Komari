@@ -10,7 +10,6 @@ export interface StatsResponse {
 
 // 旧版 REST 获取函数已移除：请在 hook 内部或 API 路由使用 fetch/RPC2
 
-
 /**
  * 地区分组类型
  */

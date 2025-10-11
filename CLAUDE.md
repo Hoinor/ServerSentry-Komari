@@ -19,10 +19,10 @@ ServerSentry is a Next.js 15 + React 19 monitoring dashboard for ServerStatus-Ru
 ### Core Technologies
 - **Next.js 15** with App Router and standalone output
 - **React 19** with Strict Mode enabled
-- **TypeScript** for type safety
-- **Tailwind CSS** with custom font (HarmonyOS Sans SC) and native animations
-- **TanStack Query** for data fetching and caching
-- **native fetch** for API requests
+- **TypeScript** targeting ES2022 for modern builds
+- **Tailwind CSS v4** with custom font (HarmonyOS Sans SC) and native animations
+- **TanStack Query v5** for data fetching, caching, and polling
+- **Native Fetch API** (no axios) with Komari RPC2 backend integration
 
 ### Project Structure
 
@@ -35,24 +35,26 @@ src/
 │   └── ui/              # Reusable UI components
 ├── hooks/               # Custom React hooks
 ├── lib/                 # Utilities and configuration
+├── types/               # Shared TypeScript interfaces
 └── styles/              # CSS files
 ```
 
 ### Key Configuration Files
 
-- `src/lib/config.ts` - Global app configuration including API URL, refresh interval, and site metadata
-- `src/lib/api.ts` - Frontend helpers (types, grouping utilities, fetch wrapper for local proxy)
+- `src/lib/config.ts` - Global app configuration including API URLs, refresh interval, and site metadata
+- `src/lib/api.ts` - Frontend helpers (response typing, region grouping utilities)
 - `src/lib/rpc2.ts` - Komari RPC2 client and typed wrappers
 - `src/lib/response.ts` - Helper to standardize API route JSON responses and cache policy
+- `src/types/server.ts` - Shared server interface for UI consumption
 - `next.config.ts` - Next.js configuration with standalone output
 
 ### Data Flow
 
-1. **API Integration**: The UI calls local proxy routes (`/api/servers`, `/api/public`, `/api/version`).
-   - `/api/servers` aggregates Komari data primarily via RPC2 (`common:getNodes`, `common:getNodesLatestStatus`).
-   - For uptime seconds, it temporarily falls back to traditional REST (`/api/recent/{uuid}`) when needed.
-2. **Query Management**: Uses TanStack Query to poll `/api/servers` at `config.refreshInterval`.
-3. **Type Safety**: Strong typing for RPC2 payloads and UI consumption types.
+1. **API Integration**: The frontend consumes local Next.js routes (`/api/servers`, `/api/public`, `/api/version`).
+   - `/api/servers` aggregates Komari data primarily via RPC2 (`common:getNodes`, `common:getNodesLatestStatus`) and supplements uptime through the traditional REST endpoint (`/api/recent/{uuid}`) when required.
+2. **Query Management**: TanStack Query polls `/api/servers` at `config.refresh.serversMs` (default 2s) with window-focus refetch disabled to reduce churn.
+3. **Data Processing**: API routes normalize Komari responses (network totals, memory/disk units, virtualization labels) before sending data to the UI.
+4. **Type Safety**: Shared TypeScript interfaces live in `src/types/server.ts`, keeping hooks and components aligned with backend payloads.
 
 ### UI Design Philosophy
 
@@ -63,11 +65,13 @@ src/
 
 ### Performance Optimizations
 
-- Query configuration optimized for reduced memory footprint
-- Disabled refetching on window focus
-- Data selection in useServers hook to minimize memory usage
-- Turbopack for faster development builds
-- CSS-only animations instead of JavaScript-based motion libraries
+- **Component Lazy Loading**: Large components (ServerList, RegionSelect, RegionGroupView) are lazy-loaded using React.lazy()
+- **Virtualized Lists**: Server collections over 50 items use a lazy-loaded optimized list component to reduce render cost
+- **Query Optimization**: TanStack Query configured with disabled window focus refetch and tight polling interval
+- **Data Selection**: Hooks return pre-sorted/grouped data to minimize downstream processing
+- **Turbopack**: Fast development builds with Turbopack
+- **CSS-Only Animations**: No JavaScript animation libraries - all transitions via Tailwind CSS classes
+- **Modern Browser Target**: Next.js build targets modern browsers (ES2022) and omits legacy polyfills
 - **macOS Scroll Optimization**: Specialized CSS classes for smooth scrolling on macOS
 - **GPU Acceleration**: Hardware acceleration for all interactive elements
 - **Layout Containment**: CSS containment to reduce reflow and repaint
@@ -76,10 +80,21 @@ src/
 
 ### Theme System
 
-- Supports light/dark mode toggle
+- Supports light/dark mode toggle via next-themes
 - Configurable background system with gradient animations
 - Custom theme selector component
 - CSS variables for consistent theming
+- Default theme: light, system theme detection disabled
+
+### Key Features
+
+- **Dashboard Stats**: Aggregated view of total/online servers, uptime, and traffic
+- **Region Filtering**: Filter servers by location (groups servers by `location` field)
+- **Region Grouping**: Displays servers grouped by region with collapsible sections
+- **Real-time Monitoring**: Auto-refreshing server metrics (CPU, memory, disk, network)
+- **Network Speed Display**: Live upload/download speeds with formatted units
+- **Status Indicators**: Visual IPv4/IPv6 connectivity status badges
+- **Loading States**: Skeleton screens and optimistic UI updates
 
 ## Environment Variables
 
@@ -89,22 +104,45 @@ src/
 ## Deployment
 
 The app is configured for standalone deployment with:
-- Static export capability (`bun run export`)
-- Unoptimized images for static hosting
-- API proxy configuration for CORS handling
-- Docker-friendly standalone output
+- **Standalone Output**: Next.js standalone mode for minimal Docker images
+- **Built-in API Proxy**: Next.js API routes handle Komari RPC2 calls, REST fallbacks, and CORS
+- **Production Build**: Console logs removed in production builds
+- **Environment**: Requires `KOMARI_BASE_URL` (and optional `KOMARI_API_KEY`) for backend access
+
+### Deployment Options
+
+1. **Standalone Node.js**: Deploy `.next/standalone` directory with Node.js 18+
+2. **Nginx Reverse Proxy**: Proxy frontend on port 3000, ensure `KOMARI_BASE_URL` is configured
+3. **Replace Built-in Theme**: Export and copy to ServerStatus-Rust `web/` directory (see README.md)
 
 ## Component Patterns
 
-- Use the established component structure in `components/` directories
-- Follow the existing TypeScript interface patterns in `src/lib/api.ts`
-- Utilize the custom hooks pattern for data fetching (`use-servers.ts`, `use-theme.ts`)
-- Implement hover effects and transitions using Tailwind CSS classes
-- Use `transition-*` classes for smooth interactions without JavaScript animations
-- Apply performance optimization classes for macOS compatibility:
-  - `gpu-accelerated` - For hardware acceleration
-  - `card-optimized` - For card components
-  - `grid-optimized` - For grid layouts
-  - `layout-optimized` - For containers
-  - `hover-optimized` - For interactive elements
-  - `macos-scroll-optimized` - For smooth scrolling on macOS
+- **Component Organization**:
+  - `components/dashboard/` - Dashboard-specific components
+  - `components/server/` - Server card and detail components
+  - `components/ui/` - Reusable UI primitives
+  - Export components via index.ts barrel files
+- **Lazy Loading**: Large components should use React.lazy() with Suspense fallbacks
+  ```tsx
+  const ServerList = lazy(() => import('@/components/server-list').then(m => ({ default: m.ServerList })));
+  ```
+- **Virtualized Rendering**: `VirtualizedServerList` is loaded on demand for large server sets (50+) to minimize DOM nodes.
+- **Styling**:
+  - Use Tailwind CSS classes exclusively (no CSS-in-JS)
+  - Apply performance optimization classes for macOS:
+    - `gpu-accelerated` - Hardware acceleration
+    - `card-optimized` - Card components
+    - `grid-optimized` - Grid layouts
+    - `macos-scroll-optimized` - Smooth scrolling
+  - Use `transition-*` classes for hover effects
+- **Data Fetching**:
+  - Use custom hooks (`use-servers.ts`, `use-region-data.ts`)
+  - Follow TanStack Query patterns with select for data transformation
+  - TypeScript interfaces defined in `src/types/server.ts`
+- **Formatting Utilities**: Available in `src/lib/utils.ts`
+  - `formatBytes(bytes, decimals)` - Format storage/memory sizes
+  - `formatSpeed(bytes, decimals)` - Format network speeds
+  - `formatPercent(value, total)` - Calculate percentages
+  - `groupServersByRegion(servers)` - Group servers by location (`src/lib/api.ts`)
+  - `getUniqueRegions(servers)` - Extract unique region list (`src/lib/api.ts`)
+  - All use native `Intl.NumberFormat` for localization
