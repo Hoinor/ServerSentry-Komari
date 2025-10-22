@@ -7,6 +7,90 @@ import { createCpuFormatter, createSwapFormatter, formatKiB, formatMiB } from '@
 import { ServerMetric } from './server-metric';
 import { Clock, MapPin, Server as ServerIcon } from 'lucide-react';
 
+// 将emoji国旗转换为国家代码
+const emojiToCountryCode = (emoji: string): string | null => {
+  if (!emoji) return null;
+  
+  // 将emoji字符串转换为数组，正确处理Unicode代理对
+  const chars = Array.from(emoji);
+  if (chars.length !== 2) return null;
+  
+  // 获取每个字符的代码点
+  const codePoints = chars.map(char => char.codePointAt(0));
+  if (codePoints.length !== 2 || !codePoints[0] || !codePoints[1]) return null;
+  
+  // Regional Indicator Symbol 的基础值是 0x1F1E6 (对应 'A')
+  const baseCodePoint = 0x1F1E6;
+  
+  // 验证代码点是否在正确范围内
+  if (codePoints[0] < baseCodePoint || codePoints[0] > 0x1F1FF || 
+      codePoints[1] < baseCodePoint || codePoints[1] > 0x1F1FF) {
+    return null;
+  }
+  
+  const firstLetter = String.fromCharCode(codePoints[0] - baseCodePoint + 65); // 65 是 'A' 的 ASCII
+  const secondLetter = String.fromCharCode(codePoints[1] - baseCodePoint + 65);
+  
+  const result = firstLetter + secondLetter;
+  
+  // 调试信息（生产环境可以移除）
+  console.log(`Emoji: ${emoji}, CodePoints: [${codePoints[0].toString(16)}, ${codePoints[1].toString(16)}], Result: ${result}`);
+  
+  return result;
+};
+
+// 获取国旗显示函数 - 使用SVG图标
+const getCountryFlag = (location: string): React.ReactNode => {
+  if (!location) {
+    return (
+      <img 
+        src="/flags/UN.svg" 
+        alt="Unknown" 
+        className="w-6 h-4 object-cover rounded-sm"
+        onError={(e) => {
+          e.currentTarget.style.display = 'none';
+        }}
+      />
+    );
+  }
+  
+  // 检查location是否包含emoji国旗
+  // Unicode国旗emoji范围: U+1F1E6-U+1F1FF (Regional Indicator Symbols)
+  const flagEmojiRegex = /[\u{1F1E6}-\u{1F1FF}]{2}/u;
+  const match = location.match(flagEmojiRegex);
+  
+  if (match) {
+    // 将emoji转换为国家代码
+    const countryCode = emojiToCountryCode(match[0]);
+    
+    if (countryCode) {
+      return (
+        <img 
+          src={`/flags/${countryCode}.svg`} 
+          alt={countryCode} 
+          className="w-6 h-4 object-cover rounded-sm"
+          onError={(e) => {
+            // 如果SVG加载失败，显示原始emoji
+            e.currentTarget.outerHTML = `<span class="text-lg">${match[0]}</span>`;
+          }}
+        />
+      );
+    }
+  }
+  
+  // 如果没有找到国旗emoji或转换失败，返回默认地球图标
+  return (
+    <img 
+      src="/flags/UN.svg" 
+      alt="Unknown" 
+      className="w-6 h-4 object-cover rounded-sm"
+      onError={(e) => {
+        e.currentTarget.outerHTML = '<span class="text-lg">🌍</span>';
+      }}
+    />
+  );
+};
+
 // 导入拆分后的组件
 import {
   StatusIndicator,
@@ -129,8 +213,10 @@ const ServerCardHeader: React.FC<ServerCardHeaderProps> = React.memo(function Se
     <div className="p-4 pb-2 space-y-2">
       {/* 名称和状态行 */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5 min-w-0 max-w-[70%]">
-          <StatusIndicator isOnline={isOnline} />
+        <div className="flex items-center gap-2 min-w-0 max-w-[70%]">
+          <div className="flex-shrink-0">
+            {getCountryFlag(server.location || '')}
+          </div>
           <span className="text-xl truncate" suppressHydrationWarning>
             {server.alias || server.name}
           </span>
@@ -148,7 +234,7 @@ const ServerCardHeader: React.FC<ServerCardHeaderProps> = React.memo(function Se
             ipv6Online={server.online6}
           />
           {server.type && <ServerTypeTag label={server.type} />}
-          {server.location && <LocationTag label={server.location} />}
+          {/* {server.location && <LocationTag label={server.location} />} */}
         </div>
       </div>
     </div>
@@ -177,9 +263,9 @@ UptimeDisplay.displayName = 'UptimeDisplay';
 // 服务器类型标签
 const ServerTypeTag: React.FC<{ label: string }> = React.memo(function ServerTypeTag({ label }) {
   return (
-    <span className="inline-flex items-center h-5 px-1 rounded-full text-[10px] font-medium bg-secondary/40 text-foreground/80 whitespace-nowrap">
-      <ServerIcon className="h-3 w-3 mr-0.5 text-muted-foreground" />
-      <span className="truncate max-w-[6rem]" suppressHydrationWarning>{label}</span>
+    <span className="inline-flex items-center h-6 px-2 rounded-full text-xs font-medium bg-secondary/40 text-foreground/80 whitespace-nowrap">
+      <ServerIcon className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
+      <span className="truncate max-w-[8rem]" suppressHydrationWarning>{label}</span>
     </span>
   );
 });
@@ -188,9 +274,9 @@ ServerTypeTag.displayName = 'ServerTypeTag';
 // 位置标签
 const LocationTag: React.FC<{ label: string }> = React.memo(function LocationTag({ label }) {
   return (
-    <span className="inline-flex items-center h-5 px-1 rounded-full text-[10px] font-medium bg-secondary/40 text-foreground/80 whitespace-nowrap">
-      <MapPin className="h-3 w-3 mr-0.5 text-muted-foreground" />
-      <span className="truncate max-w-[8rem]" suppressHydrationWarning>{label}</span>
+    <span className="inline-flex items-center h-6 px-2 rounded-full text-xs font-medium bg-secondary/40 text-foreground/80 whitespace-nowrap">
+      <MapPin className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
+      <span className="truncate max-w-[10rem]" suppressHydrationWarning>{label}</span>
     </span>
   );
 });

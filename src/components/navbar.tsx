@@ -73,7 +73,7 @@ export const Navbar: React.FC = React.memo(function Navbar() {
     return (
       <header className="sticky top-0 z-50 navbar-glass">
         <div className="flex h-14 items-center justify-center">
-          <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          <div className="w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <div className="flex items-center space-x-2 font-bold">
               <span className="text-xl">
                 {siteTitle}
@@ -93,7 +93,7 @@ export const Navbar: React.FC = React.memo(function Navbar() {
   return (
     <header className="sticky top-0 z-50 navbar-glass">
       <div className="flex h-14 items-center justify-center">
-        <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center space-x-2 font-bold" suppressHydrationWarning>
             <span className="text-xl" suppressHydrationWarning>
               {siteTitle}

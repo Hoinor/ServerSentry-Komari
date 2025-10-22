@@ -12,6 +12,9 @@ const config: Config = {
       fontFamily: {
         sans: ['HarmonyOS Sans SC', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
       },
+      screens: {
+        '3xl': '1920px',
+      },
     },
   },
   plugins: [],

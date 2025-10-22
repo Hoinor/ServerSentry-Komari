@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 const HomeClient = dynamic(() => import('./home-client'), {
   ssr: false,
   loading: () => (
-    <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 space-y-10 content-container">
+    <div className="w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 py-6 space-y-10 content-container">
       <div className="stats-container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 stats-grid">
           {[...Array(4)].map((_, i) => (

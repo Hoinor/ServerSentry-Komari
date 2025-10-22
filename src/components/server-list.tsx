@@ -53,7 +53,7 @@ export const ServerList: React.FC = React.memo(function ServerList() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 server-grid">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-6 server-grid">
       {sortedServers.map((server, index) => (
         <ServerCardItem
           key={server.name}
@@ -82,8 +82,8 @@ ServerCardItem.displayName = 'ServerCardItem';
 // 加载骨架屏组件
 const LoadingSkeleton: React.FC = () => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 server-grid">
-      {Array(8).fill(null).map((_, i) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-6 server-grid">
+      {Array(12).fill(null).map((_, i) => (
         <div
           key={i}
           className="h-[300px] bg-muted/10 rounded-lg animate-pulse animate-slide-up"
@@ -92,4 +92,4 @@ const LoadingSkeleton: React.FC = () => {
       ))}
     </div>
   );
-}; 
+};

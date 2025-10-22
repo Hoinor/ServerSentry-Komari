@@ -12,8 +12,8 @@ const RegionGroupView = lazy(() => import('@/components/region-group-view').then
 // 加载中组件
 const LoadingServerList = () => (
   <div className="server-grid-container">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 server-grid">
-      {[...Array(8)].map((_, i) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-6 server-grid">
+      {[...Array(12)].map((_, i) => (
         <div
           key={i}
           className="server-card loading-placeholder skeleton"
@@ -29,7 +29,7 @@ export default function HomeClient() {
   const { regions, regionGroups, isLoading } = useRegionData(selectedRegion);
 
   return (
-    <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 space-y-10 content-container">
+    <div className="w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 py-6 space-y-10 content-container">
       <DashboardStats />
 
       <div className="space-y-6 min-h-[600px]">

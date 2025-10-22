@@ -38,8 +38,8 @@ export const VirtualizedServerList: React.FC = React.memo(function VirtualizedSe
 
   if (!data?.servers || sortedServers.length === 0) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 server-grid">
-        {Array(8).fill(null).map((_, i) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-6 server-grid">
+        {Array(12).fill(null).map((_, i) => (
           <div
             key={i}
             className="h-[300px] bg-muted/10 rounded-lg animate-pulse animate-slide-up"
@@ -53,7 +53,7 @@ export const VirtualizedServerList: React.FC = React.memo(function VirtualizedSe
   // 使用优化的grid布局渲染所有服务器
   // 性能优化依赖于ServerCard的高效比较函数和React.memo
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 server-grid">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-6 server-grid">
       {sortedServers.map((server, index) => (
         <div
           key={server.name}

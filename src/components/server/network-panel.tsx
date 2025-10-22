@@ -37,17 +37,17 @@ export const RealTimeNetworkPanel: React.FC<RealTimeNetworkPanelProps> = React.m
 
       <div className="space-y-1.5">
         <div className="flex items-center min-h-[18px] text-xs">
-          <NetworkArrow direction="down" />
+          <span className="text-sm flex-shrink-0 text-muted-foreground transition-colors duration-150 hover:text-foreground">↓</span>
           <span className="font-medium ml-1 w-6 flex-shrink-0">下载</span>
-          <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto transition-colors duration-150 hover:text-foreground" suppressHydrationWarning>
+          <span className="font-semibold text-muted-foreground font-mono whitespace-nowrap ml-auto transition-colors duration-150 hover:text-foreground" suppressHydrationWarning>
             {formattedDownload}
           </span>
         </div>
 
         <div className="flex items-center min-h-[18px] text-xs">
-          <NetworkArrow direction="up" />
+          <span className="text-sm flex-shrink-0 text-muted-foreground transition-colors duration-150 hover:text-foreground">↑</span>
           <span className="font-medium ml-1 w-6 flex-shrink-0">上传</span>
-          <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto transition-colors duration-150 hover:text-foreground" suppressHydrationWarning>
+          <span className="font-semibold text-muted-foreground font-mono whitespace-nowrap ml-auto transition-colors duration-150 hover:text-foreground" suppressHydrationWarning>
             {formattedUpload}
           </span>
         </div>
