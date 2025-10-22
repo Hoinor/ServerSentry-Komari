@@ -4,15 +4,15 @@ import React from 'react';
 import { Wifi, HardDrive } from 'lucide-react';
 import { formatBytes, formatSpeed } from '@/lib/utils';
 
-interface NetworkArrowProps {
-  direction: 'up' | 'down';
-}
+// interface NetworkArrowProps {
+//   direction: 'up' | 'down';
+// }
 
-const NetworkArrow: React.FC<NetworkArrowProps> = ({ direction }) => (
-  <span className="text-sm flex-shrink-0 text-muted-foreground transition-all duration-150 hover:text-foreground hover:scale-110">
-    {direction === 'down' ? '↓' : '↑'}
-  </span>
-);
+// const NetworkArrow: React.FC<NetworkArrowProps> = ({ direction }) => (
+//   <span className="text-sm flex-shrink-0 text-muted-foreground transition-all duration-150 hover:text-foreground hover:scale-110">
+//     {direction === 'down' ? '↓' : '↑'}
+//   </span>
+// );
 
 // 实时网络面板
 interface RealTimeNetworkPanelProps {
@@ -39,7 +39,7 @@ export const RealTimeNetworkPanel: React.FC<RealTimeNetworkPanelProps> = React.m
         <div className="flex items-center min-h-[18px] text-xs">
           <span className="text-sm flex-shrink-0 text-muted-foreground transition-colors duration-150 hover:text-foreground">↓</span>
           <span className="font-medium ml-1 w-6 flex-shrink-0">下载</span>
-          <span className="font-semibold text-muted-foreground font-mono whitespace-nowrap ml-auto transition-colors duration-150 hover:text-foreground" suppressHydrationWarning>
+          <span className="font-semibold text-foreground font-mono whitespace-nowrap ml-auto transition-colors duration-150 hover:text-foreground" suppressHydrationWarning>
             {formattedDownload}
           </span>
         </div>
@@ -47,7 +47,7 @@ export const RealTimeNetworkPanel: React.FC<RealTimeNetworkPanelProps> = React.m
         <div className="flex items-center min-h-[18px] text-xs">
           <span className="text-sm flex-shrink-0 text-muted-foreground transition-colors duration-150 hover:text-foreground">↑</span>
           <span className="font-medium ml-1 w-6 flex-shrink-0">上传</span>
-          <span className="font-semibold text-muted-foreground font-mono whitespace-nowrap ml-auto transition-colors duration-150 hover:text-foreground" suppressHydrationWarning>
+          <span className="font-semibold text-foreground font-mono whitespace-nowrap ml-auto transition-colors duration-150 hover:text-foreground" suppressHydrationWarning>
             {formattedUpload}
           </span>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import type { Server } from '@/types/server';
 import { formatDurationEnShort } from '@/lib/utils';
 import { createCpuFormatter, createSwapFormatter, formatKiB, formatMiB } from '@/lib/utils';
@@ -43,9 +44,11 @@ const emojiToCountryCode = (emoji: string): string | null => {
 const getCountryFlag = (location: string): React.ReactNode => {
   if (!location) {
     return (
-      <img 
+      <Image 
         src="/flags/UN.svg" 
         alt="Unknown" 
+        width={24}
+        height={16}
         className="w-6 h-4 object-cover rounded-sm"
         onError={(e) => {
           e.currentTarget.style.display = 'none';
@@ -65,9 +68,11 @@ const getCountryFlag = (location: string): React.ReactNode => {
     
     if (countryCode) {
       return (
-        <img 
+        <Image 
           src={`/flags/${countryCode}.svg`} 
           alt={countryCode} 
+          width={24}
+          height={16}
           className="w-6 h-4 object-cover rounded-sm"
           onError={(e) => {
             // 如果SVG加载失败，显示原始emoji
@@ -80,9 +85,11 @@ const getCountryFlag = (location: string): React.ReactNode => {
   
   // 如果没有找到国旗emoji或转换失败，返回默认地球图标
   return (
-    <img 
+    <Image 
       src="/flags/UN.svg" 
       alt="Unknown" 
+      width={24}
+      height={16}
       className="w-6 h-4 object-cover rounded-sm"
       onError={(e) => {
         e.currentTarget.outerHTML = '<span class="text-lg">🌍</span>';
@@ -93,7 +100,7 @@ const getCountryFlag = (location: string): React.ReactNode => {
 
 // 导入拆分后的组件
 import {
-  StatusIndicator,
+  // StatusIndicator,
   StatusBadge,
   RealTimeNetworkPanel,
   TotalTrafficPanel,
